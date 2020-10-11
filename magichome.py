@@ -58,8 +58,14 @@ class MagicHomeApi:
         Values are excepted as integers between 0-255.
         Whites can have a value of None.
         """
-        if self.device_type <= 1:
-            # Update an RGB or an RGB + WW device
+       
+        if self.device_type ==0:
+            #Update an RGB device
+            message = [0x31, r, g, b, 0x00, 0x00, 0x0f]
+            self.send_bytes(*(message+[self.calculate_checksum(message)]))
+            
+        elif self.device_type == 1:
+            # Update an RGB + WW device
             white1 = self.check_number_range(white1)
             message = [0x31, r, g, b, white1, 0x00, 0x0f]
             self.send_bytes(*(message+[self.calculate_checksum(message)]))
@@ -162,3 +168,4 @@ class MagicHomeApi:
             print("Caught exception socket.error : %s" % exc)
             if self.s:
                 self.s.close()
+
